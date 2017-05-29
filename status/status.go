@@ -8,9 +8,9 @@ import (
 	"errors"
 
 	"github.com/dedis/cothority/status/service"
-	"gopkg.in/dedis/onet.v1"
-	"gopkg.in/dedis/onet.v1/app"
-	"gopkg.in/dedis/onet.v1/log"
+	"gopkg.in/dedis/onet.v2"
+	"gopkg.in/dedis/onet.v2/app"
+	"gopkg.in/dedis/onet.v2/log"
 
 	"sort"
 	"strings"

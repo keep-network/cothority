@@ -23,8 +23,8 @@ import (
 
 	"github.com/dedis/cothority/identity"
 	"github.com/qantik/qrgo"
-	"gopkg.in/dedis/onet.v1/app"
-	"gopkg.in/dedis/onet.v1/log"
+	"gopkg.in/dedis/onet.v2/app"
+	"gopkg.in/dedis/onet.v2/log"
 	"gopkg.in/urfave/cli.v1"
 )
 

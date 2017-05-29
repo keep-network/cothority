@@ -3,8 +3,8 @@ package byzcoin
 import (
 	"github.com/dedis/cothority/byzcoin/blockchain"
 	"github.com/dedis/cothority/byzcoin/cosi"
-	"gopkg.in/dedis/onet.v1"
-	"gopkg.in/dedis/onet.v1/network"
+	"gopkg.in/dedis/onet.v2"
+	"gopkg.in/dedis/onet.v2/network"
 )
 
 func init() {

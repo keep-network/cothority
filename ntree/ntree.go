@@ -4,10 +4,11 @@ import (
 	"errors"
 	"fmt"
 
-	"gopkg.in/dedis/onet.v1"
-	"gopkg.in/dedis/onet.v1/crypto"
-	"gopkg.in/dedis/onet.v1/log"
-	"gopkg.in/dedis/onet.v1/network"
+	"github.com/dedis/kyber/sign/schnorr"
+	"github.com/dedis/onet"
+
+	"gopkg.in/dedis/onet.v2/log"
+	"gopkg.in/dedis/onet.v2/network"
 )
 
 func init() {
@@ -65,7 +66,7 @@ func (p *Protocol) Start() error {
 func (p *Protocol) HandleSignRequest(msg structMessage) error {
 	p.Message = msg.Msg
 	p.VerifySignature = msg.VerifySignature
-	signature, err := crypto.SignSchnorr(network.Suite, p.Private(), p.Message)
+	signature, err := schnorr.Sign(network.S, p.Private(), p.Message)
 	if err != nil {
 		return err
 	}
@@ -141,7 +142,7 @@ func (p *Protocol) verifySignatureReply(sig *SignatureReply) string {
 	}
 	entity := p.Roster().List[sig.Index]
 	var s string
-	if err := crypto.VerifySchnorr(p.Suite(), entity.Public, p.Message, sig.Sig); err != nil {
+	if err := schnorr.Verify(p.Suite(), entity.Public, p.Message, sig.Sig); err != nil {
 		s = "FAIL"
 	} else {
 		s = "SUCCESS"
@@ -164,7 +165,7 @@ type Message struct {
 //   * Index of the public key in the entitylist in order to verify the
 //   signature
 type SignatureReply struct {
-	Sig   crypto.SchnorrSig
+	Sig   []byte
 	Index int
 }
 

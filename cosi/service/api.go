@@ -3,8 +3,8 @@ package service
 import (
 	"errors"
 
-	"gopkg.in/dedis/onet.v1"
-	"gopkg.in/dedis/onet.v1/log"
+	"gopkg.in/dedis/onet.v2"
+	"gopkg.in/dedis/onet.v2/log"
 )
 
 // Client is a structure to communicate with the CoSi

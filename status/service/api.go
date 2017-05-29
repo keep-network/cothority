@@ -1,8 +1,8 @@
 package status
 
 import (
-	"gopkg.in/dedis/onet.v1"
-	"gopkg.in/dedis/onet.v1/network"
+	"gopkg.in/dedis/onet.v2"
+	"gopkg.in/dedis/onet.v2/network"
 )
 
 // Client is a structure to communicate with status service

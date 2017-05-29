@@ -15,7 +15,7 @@ import (
 	"encoding/hex"
 
 	"github.com/dedis/cothority/byzcoin/blockchain/blkparser"
-	"gopkg.in/dedis/onet.v1/log"
+	"gopkg.in/dedis/onet.v2/log"
 )
 
 type Parser struct {

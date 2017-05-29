@@ -8,9 +8,9 @@ import (
 	"time"
 
 	"github.com/dedis/cothority/byzcoin/blockchain"
-	"gopkg.in/dedis/crypto.v0/abstract"
-	"gopkg.in/dedis/onet.v1"
-	"gopkg.in/dedis/onet.v1/log"
+	"gopkg.in/dedis/kyber.v1"
+	"gopkg.in/dedis/onet.v2"
+	"gopkg.in/dedis/onet.v2/log"
 )
 
 const (
@@ -30,7 +30,7 @@ type Protocol struct {
 	// the suite we use
 	suite abstract.Suite
 	// aggregated public key of the peers
-	aggregatedPublic abstract.Point
+	aggregatedPublic kyber.Point
 	// a flat list of all TreeNodes (similar to jvss)
 	nodeList []*onet.TreeNode
 	// our index in the entitylist

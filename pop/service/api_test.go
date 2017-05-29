@@ -4,13 +4,13 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"gopkg.in/dedis/crypto.v0/abstract"
-	"gopkg.in/dedis/crypto.v0/config"
-	"gopkg.in/dedis/crypto.v0/eddsa"
-	"gopkg.in/dedis/crypto.v0/random"
-	"gopkg.in/dedis/onet.v1"
-	"gopkg.in/dedis/onet.v1/log"
-	"gopkg.in/dedis/onet.v1/network"
+	"gopkg.in/dedis/kyber.v1"
+	"gopkg.in/dedis/kyber.v1/config"
+	"gopkg.in/dedis/kyber.v1/eddsa"
+	"gopkg.in/dedis/kyber.v1/random"
+	"gopkg.in/dedis/onet.v2"
+	"gopkg.in/dedis/onet.v2/log"
+	"gopkg.in/dedis/onet.v2/network"
 )
 
 func TestFinalStatement_ToToml(t *testing.T) {
@@ -23,7 +23,7 @@ func TestFinalStatement_ToToml(t *testing.T) {
 			DateTime: "yesterday",
 			Roster:   roster,
 		},
-		Attendees: []abstract.Point{pk.Public},
+		Attendees: []kyber.Point{pk.Public},
 	}
 	fs.Signature = fs.Desc.Hash()
 	fsStr, err := fs.ToToml()
@@ -46,7 +46,7 @@ func TestFinalStatement_Verify(t *testing.T) {
 			DateTime: "yesterday",
 			Roster:   roster,
 		},
-		Attendees: []abstract.Point{eddsa.Public},
+		Attendees: []kyber.Point{eddsa.Public},
 	}
 	require.NotNil(t, fs.Verify())
 	h, err := fs.Hash()

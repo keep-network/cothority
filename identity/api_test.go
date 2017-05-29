@@ -5,13 +5,13 @@ import (
 	"os"
 	"testing"
 
+	"github.com/dedis/onet"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"gopkg.in/dedis/crypto.v0/config"
-	"gopkg.in/dedis/onet.v1"
-	"gopkg.in/dedis/onet.v1/crypto"
-	"gopkg.in/dedis/onet.v1/log"
-	"gopkg.in/dedis/onet.v1/network"
+	"gopkg.in/dedis/kyber.v1/config"
+	"gopkg.in/dedis/kyber.v1/sign/schnorr"
+	"gopkg.in/dedis/onet.v2/log"
+	"gopkg.in/dedis/onet.v2/network"
 )
 
 func NewTestIdentity(cothority *onet.Roster, majority int, owner string, local *onet.LocalTest) *Identity {
@@ -247,7 +247,7 @@ func TestVerificationFunction(t *testing.T) {
 	data2.Storage["two2"] = "public2"
 	hash, err := data2.Hash()
 	log.ErrFatal(err)
-	sig, err := crypto.SignSchnorr(network.Suite, kp2.Secret, hash)
+	sig, err := schnorr.Sign(network.Suite, kp2.Secret, hash)
 	log.ErrFatal(err)
 	data2.Votes["one1"] = &sig
 	data2.Votes["two2"] = &sig
@@ -257,7 +257,7 @@ func TestVerificationFunction(t *testing.T) {
 	require.NotNil(t, cerr, "Skipchain accepted our fake block!")
 
 	// Gibberish signature
-	sig, err = crypto.SignSchnorr(network.Suite, c1.Private, hash)
+	sig, err = schnorr.Sign(network.S, c1.Private, hash)
 	log.ErrFatal(err)
 	sig.Response.Add(sig.Response, network.Suite.Scalar().One())
 	data2.Votes["one1"] = &sig
@@ -266,7 +266,7 @@ func TestVerificationFunction(t *testing.T) {
 
 	// Unhack: verify that the correct way of doing it works, even if
 	// we bypass the identity.
-	sig, err = crypto.SignSchnorr(network.Suite, c1.Private, hash)
+	sig, err = schnorr.Sign(network.Suite, c1.Private, hash)
 	log.ErrFatal(err)
 	data2.Votes["one1"] = &sig
 	_, cerr = s0.skipchain.StoreSkipBlock(id.SCData, nil, data2)

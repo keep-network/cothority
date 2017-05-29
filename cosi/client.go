@@ -12,13 +12,13 @@ import (
 
 	"github.com/dedis/cothority/cosi/check"
 	s "github.com/dedis/cothority/cosi/service"
-	"gopkg.in/dedis/crypto.v0/abstract"
-	"gopkg.in/dedis/crypto.v0/cosi"
-	"gopkg.in/dedis/onet.v1"
-	"gopkg.in/dedis/onet.v1/app"
-	"gopkg.in/dedis/onet.v1/crypto"
-	"gopkg.in/dedis/onet.v1/log"
-	"gopkg.in/dedis/onet.v1/network"
+	"github.com/dedis/kyber"
+	"github.com/dedis/onet"
+	"gopkg.in/dedis/crypto.v1/util/hash"
+	"gopkg.in/dedis/kyber.v1/cosi"
+	"gopkg.in/dedis/onet.v2/app"
+	"gopkg.in/dedis/onet.v2/log"
+	"gopkg.in/dedis/onet.v2/network"
 	"gopkg.in/urfave/cli.v1"
 )
 
@@ -119,7 +119,7 @@ func signStatement(read io.Reader, el *onet.Roster) (*s.SignatureResponse,
 	error) {
 	publics := entityListToPublics(el)
 	client := s.NewClient()
-	msg, _ := crypto.HashStream(network.Suite.Hash(), read)
+	msg, _ := hash.Stream(network.Suite.Hash(), read)
 
 	pchan := make(chan *s.SignatureResponse)
 	var err error
@@ -196,8 +196,8 @@ func verifySignatureHash(b []byte, sig *s.SignatureResponse, el *onet.Roster) er
 	// We have to hash twice, as the hash in the signature is the hash of the
 	// message sent to be signed
 	publics := entityListToPublics(el)
-	fHash, _ := crypto.HashBytes(network.Suite.Hash(), b)
-	hashHash, _ := crypto.HashBytes(network.Suite.Hash(), fHash)
+	fHash, _ := hash.Bytes(network.Suite.Hash(), b)
+	hashHash, _ := hash.Bytes(network.Suite.Hash(), fHash)
 	if !bytes.Equal(hashHash, sig.Hash) {
 		return errors.New("You are trying to verify a signature " +
 			"belonging to another file. (The hash provided by the signature " +
@@ -208,8 +208,8 @@ func verifySignatureHash(b []byte, sig *s.SignatureResponse, el *onet.Roster) er
 	}
 	return nil
 }
-func entityListToPublics(r *onet.Roster) []abstract.Point {
-	publics := make([]abstract.Point, len(r.List))
+func entityListToPublics(r *onet.Roster) []kyber.Point {
+	publics := make([]kyber.Point, len(r.List))
 	for i, e := range r.List {
 		publics[i] = e.Public
 	}

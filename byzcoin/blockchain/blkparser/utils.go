@@ -5,7 +5,7 @@ import (
 	"crypto/sha256"
 	"fmt"
 
-	"gopkg.in/dedis/onet.v1/log"
+	"gopkg.in/dedis/onet.v2/log"
 )
 
 // Get the Tx count, decode the variable length integer

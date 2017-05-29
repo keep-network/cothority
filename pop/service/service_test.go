@@ -4,11 +4,11 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"gopkg.in/dedis/crypto.v0/abstract"
-	"gopkg.in/dedis/crypto.v0/config"
-	"gopkg.in/dedis/onet.v1"
-	"gopkg.in/dedis/onet.v1/log"
-	"gopkg.in/dedis/onet.v1/network"
+	"gopkg.in/dedis/kyber.v1"
+	"gopkg.in/dedis/kyber.v1/config"
+	"gopkg.in/dedis/onet.v2"
+	"gopkg.in/dedis/onet.v2/log"
+	"gopkg.in/dedis/onet.v2/network"
 )
 
 var serviceID onet.ServiceID
@@ -74,7 +74,7 @@ func TestService_CheckConfig(t *testing.T) {
 	defer local.CloseAll()
 	desc, atts, srvcs := storeDesc(local.GetServices(nodes, serviceID), r, 2)
 	for _, s := range srvcs {
-		s.data.Final.Attendees = make([]abstract.Point, len(atts))
+		s.data.Final.Attendees = make([]kyber.Point, len(atts))
 		copy(s.data.Final.Attendees, atts)
 	}
 
@@ -102,7 +102,7 @@ func TestService_CheckConfigReply(t *testing.T) {
 	defer local.CloseAll()
 	desc, atts, srvcs := storeDesc(local.GetServices(nodes, serviceID), r, 2)
 	s0 := srvcs[0]
-	s0.data.Final.Attendees = make([]abstract.Point, len(atts))
+	s0.data.Final.Attendees = make([]kyber.Point, len(atts))
 	copy(s0.data.Final.Attendees, atts)
 
 	ccr := &CheckConfigReply{0, desc.Hash(), atts}
@@ -166,13 +166,13 @@ func TestService_FinalizeRequest(t *testing.T) {
 	require.Nil(t, fin.Final.Verify())
 }
 
-func storeDesc(srvcs []onet.Service, el *onet.Roster, nbr int) (*PopDesc, []abstract.Point, []*Service) {
+func storeDesc(srvcs []onet.Service, el *onet.Roster, nbr int) (*PopDesc, []kyber.Point, []*Service) {
 	desc := &PopDesc{
 		Name:     "test",
 		DateTime: "tomorrow",
 		Roster:   onet.NewRoster(el.List),
 	}
-	atts := make([]abstract.Point, nbr)
+	atts := make([]kyber.Point, nbr)
 	for i := range atts {
 		kp := config.NewKeyPair(network.Suite)
 		atts[i] = kp.Public

@@ -1,6 +1,6 @@
 package handlers
 
-import "gopkg.in/dedis/onet.v1"
+import "gopkg.in/dedis/onet.v2"
 
 // Announce is used to pass a message to all children.
 type Announce struct {

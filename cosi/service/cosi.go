@@ -5,11 +5,11 @@ import (
 	"time"
 
 	"github.com/dedis/cothority/cosi/protocol"
+	"github.com/dedis/onet"
 	"github.com/satori/go.uuid"
-	"gopkg.in/dedis/onet.v1"
-	"gopkg.in/dedis/onet.v1/crypto"
-	"gopkg.in/dedis/onet.v1/log"
-	"gopkg.in/dedis/onet.v1/network"
+	"gopkg.in/dedis/crypto.v1/util/hash"
+	"gopkg.in/dedis/onet.v2/log"
+	"gopkg.in/dedis/onet.v2/network"
 )
 
 // This file contains all the code to run a CoSi service. It is used to reply to
@@ -59,7 +59,7 @@ func (cs *CoSi) SignatureRequest(req *SignatureRequest) (network.Message, onet.C
 	cs.RegisterProtocolInstance(pi)
 	pcosi := pi.(*cosi.CoSi)
 	pcosi.SigningMessage(req.Message)
-	h, err := crypto.HashBytes(network.Suite.Hash(), req.Message)
+	h, err := hash.Bytes(network.Suite.Hash(), req.Message)
 	if err != nil {
 		return nil, onet.NewClientErrorCode(4101, "Couldn't hash message: "+err.Error())
 	}

@@ -8,11 +8,10 @@ import (
 	"strings"
 
 	"github.com/dedis/cothority/skipchain"
-	"gopkg.in/dedis/crypto.v0/abstract"
-	"gopkg.in/dedis/onet.v1"
-	"gopkg.in/dedis/onet.v1/crypto"
-	"gopkg.in/dedis/onet.v1/log"
-	"gopkg.in/dedis/onet.v1/network"
+	"github.com/dedis/kyber"
+	"github.com/dedis/onet"
+	"gopkg.in/dedis/onet.v2/log"
+	"gopkg.in/dedis/onet.v2/network"
 )
 
 // How many msec to wait before a timeout is generated in the propagation
@@ -30,22 +29,22 @@ type Data struct {
 	// Votes for that block, mapped by name of the devices.
 	// This has to be verified with the previous data-block, because only
 	// the previous data-block has the authority to sign for a new block.
-	Votes map[string]*crypto.SchnorrSig
+	Votes map[string][]byte
 }
 
 // Device is represented by a public key.
 type Device struct {
 	// Point is the public key of that device
-	Point abstract.Point
+	Point kyber.Point
 }
 
 // NewData returns a new List with the first owner initialised.
-func NewData(threshold int, pub abstract.Point, owner string) *Data {
+func NewData(threshold int, pub kyber.Point, owner string) *Data {
 	return &Data{
 		Threshold: threshold,
 		Device:    map[string]*Device{owner: {pub}},
 		Storage:   make(map[string]string),
-		Votes:     map[string]*crypto.SchnorrSig{},
+		Votes:     make(map[string][]byte),
 	}
 }
 
@@ -64,7 +63,7 @@ func (d *Data) Copy() *Data {
 	if len(dNew.Storage) == 0 {
 		dNew.Storage = make(map[string]string)
 	}
-	dNew.Votes = map[string]*crypto.SchnorrSig{}
+	dNew.Votes = make(map[string][]byte)
 
 	return dNew
 }
@@ -244,7 +243,7 @@ type ProposeUpdateReply struct {
 type ProposeVote struct {
 	ID        ID
 	Signer    string
-	Signature *crypto.SchnorrSig
+	Signature []byte
 }
 
 // ProposeVoteReply returns the signed new skipblock if the threshold of

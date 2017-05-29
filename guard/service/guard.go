@@ -3,10 +3,10 @@ package guard
 import (
 	"crypto/rand"
 
-	"gopkg.in/dedis/crypto.v0/abstract"
-	"gopkg.in/dedis/onet.v1"
-	"gopkg.in/dedis/onet.v1/log"
-	"gopkg.in/dedis/onet.v1/network"
+	"gopkg.in/dedis/kyber.v1"
+	"gopkg.in/dedis/onet.v2"
+	"gopkg.in/dedis/onet.v2/log"
+	"gopkg.in/dedis/onet.v2/network"
 )
 
 // This file contains all the code to run a Guard service. The Guard receives takes a
@@ -34,12 +34,12 @@ type Guard struct {
 type Request struct {
 	UID   []byte
 	Epoch []byte
-	Msg   abstract.Point
+	Msg   kyber.Point
 }
 
 // Response is what the Guard service will reply to clients.
 type Response struct {
-	Msg abstract.Point
+	Msg kyber.Point
 }
 
 // Request treats external request to this service.

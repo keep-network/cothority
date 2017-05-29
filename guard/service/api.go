@@ -1,10 +1,10 @@
 package guard
 
 import (
-	"gopkg.in/dedis/crypto.v0/abstract"
-	"gopkg.in/dedis/onet.v1"
-	"gopkg.in/dedis/onet.v1/log"
-	"gopkg.in/dedis/onet.v1/network"
+	"gopkg.in/dedis/kyber.v1"
+	"gopkg.in/dedis/onet.v2"
+	"gopkg.in/dedis/onet.v2/log"
+	"gopkg.in/dedis/onet.v2/network"
 )
 
 // Client is a structure to communicate with Guard service
@@ -18,7 +18,7 @@ func NewClient() *Client {
 }
 
 // SendToGuard is the function that sends a request to the guard server from the client and receives the responses
-func (c *Client) SendToGuard(dst *network.ServerIdentity, UID []byte, epoch []byte, t abstract.Point) (*Response, onet.ClientError) {
+func (c *Client) SendToGuard(dst *network.ServerIdentity, UID []byte, epoch []byte, t kyber.Point) (*Response, onet.ClientError) {
 	//send request an entity in the network
 	log.Lvl4("Sending Request to ", dst)
 	serviceReq := &Request{UID, epoch, t}

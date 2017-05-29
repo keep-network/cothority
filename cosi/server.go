@@ -7,7 +7,7 @@ import (
 	// register the protocol
 	_ "github.com/dedis/cothority/cosi/protocol"
 	_ "github.com/dedis/cothority/cosi/service"
-	"gopkg.in/dedis/onet.v1/app"
+	"gopkg.in/dedis/onet.v2/app"
 )
 
 func runServer(ctx *cli.Context) {

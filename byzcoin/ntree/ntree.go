@@ -7,10 +7,10 @@ import (
 	"github.com/dedis/cothority/byzcoin"
 	"github.com/dedis/cothority/byzcoin/blockchain"
 	"github.com/dedis/cothority/byzcoin/blockchain/blkparser"
-	"gopkg.in/dedis/onet.v1"
-	"gopkg.in/dedis/onet.v1/crypto"
-	"gopkg.in/dedis/onet.v1/log"
-	"gopkg.in/dedis/onet.v1/network"
+	"github.com/dedis/onet"
+	"gopkg.in/dedis/crypto.v1/sign/schnorr"
+	"gopkg.in/dedis/onet.v2/log"
+	"gopkg.in/dedis/onet.v2/network"
 )
 
 func init() {
@@ -201,7 +201,7 @@ func (nt *Ntree) computeBlockSignature() {
 	if !ok {
 		nt.tempBlockSig.Exceptions = append(nt.tempBlockSig.Exceptions, Exception{nt.TreeNode().ID})
 	} else { // we put signature
-		schnorr, _ := crypto.SignSchnorr(nt.Suite(), nt.Private(), marshalled)
+		schnorr, _ := schnorr.Sign(nt.Suite(), nt.Private(), marshalled)
 		nt.tempBlockSig.Sigs = append(nt.tempBlockSig.Sigs, schnorr)
 	}
 	log.Lvl3(nt.Name(), "Block Signature Computed")
@@ -258,7 +258,7 @@ func (nt *Ntree) verifySignatureRequest(msg *RoundSignatureRequest) {
 	var goodSig int
 	marshalled, _ := json.Marshal(nt.block)
 	for _, sig := range msg.Sigs {
-		if err := crypto.VerifySchnorr(nt.Suite(), nt.Public(), marshalled, sig); err == nil {
+		if err := schnorr.Verify(nt.Suite(), nt.Public(), marshalled, sig); err == nil {
 			goodSig++
 		}
 	}
@@ -297,7 +297,7 @@ func (nt *Ntree) computeSignatureResponse() {
 			log.Error(err)
 			return
 		}
-		sig, err := crypto.SignSchnorr(nt.Suite(), nt.Private(), marshalled)
+		sig, err := schnorr.Sign(nt.Suite(), nt.Private(), marshalled)
 		if err != nil {
 			return
 		}
@@ -344,7 +344,7 @@ type BlockAnnounce struct {
 
 // NaiveBlockSignature contains the signatures of a block that goes up the tree using this message
 type NaiveBlockSignature struct {
-	Sigs       []crypto.SchnorrSig
+	Sigs       [][]byte
 	Exceptions []Exception
 }
 

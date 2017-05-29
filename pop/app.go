@@ -21,14 +21,14 @@ import (
 
 	"github.com/BurntSushi/toml"
 	"github.com/dedis/cothority/pop/service"
-	"gopkg.in/dedis/crypto.v0/abstract"
-	"gopkg.in/dedis/crypto.v0/anon"
-	"gopkg.in/dedis/crypto.v0/config"
-	"gopkg.in/dedis/crypto.v0/random"
-	"gopkg.in/dedis/onet.v1/app"
-	"gopkg.in/dedis/onet.v1/crypto"
-	"gopkg.in/dedis/onet.v1/log"
-	"gopkg.in/dedis/onet.v1/network"
+	"gopkg.in/dedis/kyber.v1"
+	"gopkg.in/dedis/kyber.v1/anon"
+	"gopkg.in/dedis/kyber.v1/config"
+	"gopkg.in/dedis/kyber.v1/random"
+	"gopkg.in/dedis/kyber.v1/util/encoding"
+	"gopkg.in/dedis/onet.v2/app"
+	"gopkg.in/dedis/onet.v2/log"
+	"gopkg.in/dedis/onet.v2/network"
 	"gopkg.in/urfave/cli.v1"
 )
 
@@ -43,10 +43,10 @@ type Config struct {
 	Index int
 	// Private key of attendee or organizer, depending on value
 	// of Index.
-	Private abstract.Scalar
+	Private kyber.Scalar
 	// Public key of attendee or organizer, depending on value of
 	// index.
-	Public abstract.Point
+	Public kyber.Point
 	// Address of the linked conode.
 	Address network.Address
 	// Final statement of the party.
@@ -170,7 +170,7 @@ func orgPublic(c *cli.Context) error {
 	keys := strings.Split(str, ",")
 	cfg, _ := getConfigClient(c)
 	for _, k := range keys {
-		pub, err := crypto.String64ToPub(network.Suite, k)
+		pub, err := encoding.String64ToPub(network.Suite, k)
 		if err != nil {
 			log.Fatal("Couldn't parse public key:", k, err)
 		}
@@ -215,11 +215,11 @@ func orgFinal(c *cli.Context) error {
 func clientCreate(c *cli.Context) error {
 	priv := network.Suite.NewKey(random.Stream)
 	pub := network.Suite.Point().Mul(nil, priv)
-	privStr, err := crypto.ScalarToString64(nil, priv)
+	privStr, err := encoding.ScalarToString64(nil, priv)
 	if err != nil {
 		return err
 	}
-	pubStr, err := crypto.PubToString64(nil, pub)
+	pubStr, err := encoding.PubToString64(nil, pub)
 	if err != nil {
 		return err
 	}
@@ -331,7 +331,7 @@ func newConfig(fileConfig string) (*Config, error) {
 			Private: kp.Secret,
 			Public:  kp.Public,
 			Final: &service.FinalStatement{
-				Attendees: []abstract.Point{},
+				Attendees: []kyber.Point{},
 				Signature: []byte{},
 			},
 			Index: -1,

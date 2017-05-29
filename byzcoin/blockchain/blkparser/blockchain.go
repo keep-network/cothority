@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"os"
 
-	"gopkg.in/dedis/onet.v1/log"
+	"gopkg.in/dedis/onet.v2/log"
 )
 
 // Blockchain is a struct representing a block chain

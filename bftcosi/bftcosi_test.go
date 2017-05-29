@@ -12,8 +12,8 @@ import (
 	"fmt"
 
 	"github.com/stretchr/testify/assert"
-	"gopkg.in/dedis/onet.v1"
-	"gopkg.in/dedis/onet.v1/log"
+	"gopkg.in/dedis/onet.v2"
+	"gopkg.in/dedis/onet.v2/log"
 )
 
 type Counter struct {

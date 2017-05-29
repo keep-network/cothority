@@ -15,11 +15,11 @@ import (
 	"strings"
 
 	"github.com/satori/go.uuid"
-	"gopkg.in/dedis/crypto.v0/abstract"
-	"gopkg.in/dedis/crypto.v0/cosi"
-	"gopkg.in/dedis/onet.v1"
-	"gopkg.in/dedis/onet.v1/log"
-	"gopkg.in/dedis/onet.v1/network"
+	"gopkg.in/dedis/kyber.v1"
+	"gopkg.in/dedis/kyber.v1/cosi"
+	"gopkg.in/dedis/onet.v2"
+	"gopkg.in/dedis/onet.v2/log"
+	"gopkg.in/dedis/onet.v2/network"
 )
 
 // How many msec to wait before a timeout is generated in the propagation.
@@ -349,7 +349,7 @@ func (bl *BlockLink) Copy() *BlockLink {
 
 // VerifySignature returns whether the BlockLink has been signed
 // correctly using the given list of public keys.
-func (bl *BlockLink) VerifySignature(publics []abstract.Point) error {
+func (bl *BlockLink) VerifySignature(publics []kyber.Point) error {
 	if len(bl.Signature) == 0 {
 		return errors.New("No signature present" + log.Stack())
 	}

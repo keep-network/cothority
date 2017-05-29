@@ -2,8 +2,8 @@ package pbft
 
 import (
 	"github.com/dedis/cothority/byzcoin/blockchain"
-	"gopkg.in/dedis/onet.v1"
-	"gopkg.in/dedis/onet.v1/network"
+	"gopkg.in/dedis/onet.v2"
+	"gopkg.in/dedis/onet.v2/network"
 )
 
 func init() {

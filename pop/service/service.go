@@ -34,11 +34,11 @@ import (
 
 	"github.com/dedis/cothority/cosi/protocol"
 	"github.com/dedis/cothority/messaging"
-	"gopkg.in/dedis/crypto.v0/abstract"
-	"gopkg.in/dedis/crypto.v0/random"
-	"gopkg.in/dedis/onet.v1"
-	"gopkg.in/dedis/onet.v1/log"
-	"gopkg.in/dedis/onet.v1/network"
+	"gopkg.in/dedis/kyber.v1"
+	"gopkg.in/dedis/kyber.v1/random"
+	"gopkg.in/dedis/onet.v2"
+	"gopkg.in/dedis/onet.v2/log"
+	"gopkg.in/dedis/onet.v2/network"
 )
 
 // Name is the name to refer to the Template service from another
@@ -74,7 +74,7 @@ type saveData struct {
 	// Pin holds the randomly chosen pin
 	Pin string
 	// Public key of linked pop
-	Public abstract.Point
+	Public kyber.Point
 	// The final statement
 	Final *FinalStatement
 }
@@ -127,7 +127,7 @@ func (s *Service) FinalizeRequest(req *FinalizeRequest) (network.Message, onet.C
 	}
 
 	// Contact all other nodes and ask them if they already have a config.
-	s.data.Final.Attendees = make([]abstract.Point, len(req.Attendees))
+	s.data.Final.Attendees = make([]kyber.Point, len(req.Attendees))
 	copy(s.data.Final.Attendees, req.Attendees)
 	cc := &CheckConfig{s.data.Final.Desc.Hash(), req.Attendees}
 	for _, c := range s.data.Final.Desc.Roster.List {
@@ -248,8 +248,8 @@ func (s *Service) CheckConfigReply(req *network.Envelope) {
 }
 
 // Get intersection of attendees
-func (s *Service) intersectAttendees(atts []abstract.Point) {
-	na := []abstract.Point{}
+func (s *Service) intersectAttendees(atts []kyber.Point) {
+	na := []kyber.Point{}
 	for i, p := range s.data.Final.Attendees {
 		for _, d := range atts {
 			if p.Equal(d) {

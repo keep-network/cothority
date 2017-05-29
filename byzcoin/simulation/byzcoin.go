@@ -9,10 +9,10 @@ import (
 	"github.com/dedis/cothority/byzcoin/blockchain"
 	"github.com/dedis/cothority/byzcoin/cosi"
 	"github.com/dedis/cothority/messaging"
-	"gopkg.in/dedis/crypto.v0/abstract"
-	"gopkg.in/dedis/onet.v1"
-	"gopkg.in/dedis/onet.v1/log"
-	"gopkg.in/dedis/onet.v1/simul/monitor"
+	"gopkg.in/dedis/kyber.v1"
+	"gopkg.in/dedis/onet.v2"
+	"gopkg.in/dedis/onet.v2/log"
+	"gopkg.in/dedis/onet.v2/simul/monitor"
 )
 
 func init() {
@@ -170,7 +170,7 @@ func (e *ByzCoinSimulation) Run(onetConf *onet.SimulationConfig) error {
 	return nil
 }
 
-func verifyBlockSignature(suite abstract.Suite, aggregate abstract.Point, sig *byzcoin.BlockSignature) error {
+func verifyBlockSignature(suite abstract.Suite, aggregate kyber.Point, sig *byzcoin.BlockSignature) error {
 	if sig == nil || sig.Sig == nil || sig.Block == nil {
 		return errors.New("Empty block signature")
 	}

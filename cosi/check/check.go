@@ -9,11 +9,10 @@ import (
 	"strings"
 	"time"
 
-	"gopkg.in/dedis/onet.v1"
-	"gopkg.in/dedis/onet.v1/app"
-	"gopkg.in/dedis/onet.v1/crypto"
-	"gopkg.in/dedis/onet.v1/log"
-	"gopkg.in/dedis/onet.v1/network"
+	"gopkg.in/dedis/crypto.v1/util/hash"
+	"gopkg.in/dedis/onet.v2/app"
+	"gopkg.in/dedis/onet.v2/log"
+	"gopkg.in/dedis/onet.v2/network"
 
 	// CoSi-protocol is not part of the cothority.
 	"math/rand"
@@ -21,7 +20,8 @@ import (
 	"math"
 
 	"github.com/dedis/cothority/cosi/service"
-	"gopkg.in/dedis/crypto.v0/cosi"
+	"github.com/dedis/onet"
+	"gopkg.in/dedis/kyber.v1/cosi"
 )
 
 // RequestTimeOut is how long we're willing to wait for a signature.
@@ -142,7 +142,7 @@ func signStatement(read io.Reader, el *onet.Roster) (*service.SignatureResponse,
 	error) {
 	//publics := entityListToPublics(el)
 	client := service.NewClient()
-	msg, _ := crypto.HashStream(network.Suite.Hash(), read)
+	msg, _ := hash.Stream(network.Suite.Hash(), read)
 
 	pchan := make(chan *service.SignatureResponse)
 	var err error
@@ -180,8 +180,8 @@ func verifySignatureHash(b []byte, sig *service.SignatureResponse, el *onet.Rost
 	// We have to hash twice, as the hash in the signature is the hash of the
 	// message sent to be signed
 	//publics := entityListToPublics(el)
-	fHash, _ := crypto.HashBytes(network.Suite.Hash(), b)
-	hashHash, _ := crypto.HashBytes(network.Suite.Hash(), fHash)
+	fHash, _ := hash.Bytes(network.Suite.Hash(), b)
+	hashHash, _ := hash.Bytes(network.Suite.Hash(), fHash)
 	if !bytes.Equal(hashHash, sig.Hash) {
 		return errors.New("You are trying to verify a signature " +
 			"belonging to another file. (The hash provided by the signature " +

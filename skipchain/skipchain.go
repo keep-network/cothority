@@ -12,10 +12,10 @@ import (
 	"github.com/dedis/cothority/bftcosi"
 	"github.com/dedis/cothority/messaging"
 	"github.com/satori/go.uuid"
-	"gopkg.in/dedis/crypto.v0/random"
-	"gopkg.in/dedis/onet.v1"
-	"gopkg.in/dedis/onet.v1/log"
-	"gopkg.in/dedis/onet.v1/network"
+	"gopkg.in/dedis/kyber.v1/random"
+	"gopkg.in/dedis/onet.v2"
+	"gopkg.in/dedis/onet.v2/log"
+	"gopkg.in/dedis/onet.v2/network"
 )
 
 // ServiceName can be used to refer to the name of this service

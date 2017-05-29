@@ -15,10 +15,10 @@ import (
 	"crypto/cipher"
 	"crypto/rand"
 
-	"gopkg.in/dedis/crypto.v0/abstract"
-	"gopkg.in/dedis/onet.v1"
-	"gopkg.in/dedis/onet.v1/app"
-	"gopkg.in/dedis/onet.v1/log"
+	"gopkg.in/dedis/kyber.v1"
+	"gopkg.in/dedis/onet.v2"
+	"gopkg.in/dedis/onet.v2/app"
+	"gopkg.in/dedis/onet.v2/log"
 
 	"io/ioutil"
 
@@ -28,7 +28,7 @@ import (
 	"bytes"
 
 	"github.com/dedis/cothority/guard/service"
-	"gopkg.in/dedis/onet.v1/network"
+	"gopkg.in/dedis/onet.v2/network"
 )
 
 // User is a representation of the Users data in the code, and is used to store

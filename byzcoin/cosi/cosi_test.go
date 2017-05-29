@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"testing"
 
-	"gopkg.in/dedis/crypto.v0/config"
-	"gopkg.in/dedis/crypto.v0/ed25519"
+	"gopkg.in/dedis/kyber.v1/config"
+	"gopkg.in/dedis/kyber.v1/ed25519"
 )
 
 var testSuite = ed25519.NewAES128SHA256Ed25519(false)

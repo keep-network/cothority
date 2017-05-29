@@ -4,10 +4,10 @@ import (
 	"testing"
 	"time"
 
-	"gopkg.in/dedis/crypto.v0/abstract"
-	"gopkg.in/dedis/onet.v1"
-	"gopkg.in/dedis/onet.v1/log"
-	"gopkg.in/dedis/onet.v1/network"
+	"gopkg.in/dedis/kyber.v1"
+	"gopkg.in/dedis/onet.v2"
+	"gopkg.in/dedis/onet.v2/log"
+	"gopkg.in/dedis/onet.v2/network"
 )
 
 func TestMain(m *testing.M) {
@@ -50,7 +50,7 @@ func TestCosi(t *testing.T) {
 		}
 		root = p.(*CoSi)
 		root.Message = msg
-		responseFunc := func(in []abstract.Scalar) {
+		responseFunc := func(in []kyber.Scalar) {
 			log.Lvl1("Got response")
 			if len(root.Children()) != len(in) {
 				t.Fatal("Didn't get same number of responses")

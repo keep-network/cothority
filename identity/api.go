@@ -3,14 +3,15 @@ package identity
 import (
 	"io"
 
+	"github.com/dedis/kyber"
+	"github.com/dedis/onet"
+
 	"io/ioutil"
 
-	"gopkg.in/dedis/crypto.v0/abstract"
-	"gopkg.in/dedis/crypto.v0/config"
-	"gopkg.in/dedis/onet.v1"
-	"gopkg.in/dedis/onet.v1/crypto"
-	"gopkg.in/dedis/onet.v1/log"
-	"gopkg.in/dedis/onet.v1/network"
+	"gopkg.in/dedis/crypto.v1/sign/schnorr"
+	"gopkg.in/dedis/kyber.v1/config"
+	"gopkg.in/dedis/onet.v2/log"
+	"gopkg.in/dedis/onet.v2/network"
 )
 
 /*
@@ -65,9 +66,9 @@ type Identity struct {
 	// Client represents the connection to the service.
 	Client *onet.Client
 	// Private key for that device.
-	Private abstract.Scalar
+	Private kyber.Scalar
 	// Public key for that device - will be stored in the identity-skipchain.
-	Public abstract.Point
+	Public kyber.Point
 	// ID of the skipchain this device is tied to.
 	ID ID
 	// Data is the actual, valid data of the identity-skipchain.
@@ -223,7 +224,7 @@ func (i *Identity) ProposeVote(accept bool) onet.ClientError {
 	if err != nil {
 		return onet.NewClientErrorCode(ErrorOnet, err.Error())
 	}
-	sig, err := crypto.SignSchnorr(network.Suite, i.Private, hash)
+	sig, err := schnorr.Sign(network.Suite, i.Private, hash)
 	if err != nil {
 		return onet.NewClientErrorCode(ErrorOnet, err.Error())
 	}

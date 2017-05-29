@@ -5,9 +5,9 @@ import (
 	"github.com/dedis/cothority/byzcoin"
 	"github.com/dedis/cothority/byzcoin/blockchain"
 	"github.com/dedis/cothority/byzcoin/ntree"
-	"gopkg.in/dedis/onet.v1"
-	"gopkg.in/dedis/onet.v1/log"
-	"gopkg.in/dedis/onet.v1/simul/monitor"
+	"gopkg.in/dedis/onet.v2"
+	"gopkg.in/dedis/onet.v2/log"
+	"gopkg.in/dedis/onet.v2/simul/monitor"
 )
 
 func init() {

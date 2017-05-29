@@ -3,10 +3,10 @@ package main
 import (
 	"github.com/BurntSushi/toml"
 	"github.com/dedis/cothority/randhound"
-	"gopkg.in/dedis/onet.v1"
-	"gopkg.in/dedis/onet.v1/log"
-	"gopkg.in/dedis/onet.v1/simul"
-	"gopkg.in/dedis/onet.v1/simul/monitor"
+	"gopkg.in/dedis/onet.v2"
+	"gopkg.in/dedis/onet.v2/log"
+	"gopkg.in/dedis/onet.v2/simul"
+	"gopkg.in/dedis/onet.v2/simul/monitor"
 )
 
 func init() {

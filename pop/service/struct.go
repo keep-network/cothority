@@ -5,8 +5,8 @@ This holds the messages used to communicate with the service over the network.
 */
 
 import (
-	"gopkg.in/dedis/crypto.v0/abstract"
-	"gopkg.in/dedis/onet.v1/network"
+	"gopkg.in/dedis/kyber.v1"
+	"gopkg.in/dedis/onet.v2/network"
 )
 
 // We need to register all messages so the network knows how to handle them.
@@ -31,7 +31,7 @@ const (
 // CheckConfig asks whether the pop-config and the attendees are available.
 type CheckConfig struct {
 	PopHash   []byte
-	Attendees []abstract.Point
+	Attendees []kyber.Point
 }
 
 // CheckConfigReply sends back an integer for the Pop. 0 means no config yet,
@@ -41,7 +41,7 @@ type CheckConfig struct {
 type CheckConfigReply struct {
 	PopStatus int
 	PopHash   []byte
-	Attendees []abstract.Point
+	Attendees []kyber.Point
 }
 
 // PinRequest will print a random pin on stdout if the pin is empty. If
@@ -49,7 +49,7 @@ type CheckConfigReply struct {
 // public-key is stored as a reference to the allowed client.
 type PinRequest struct {
 	Pin    string
-	Public abstract.Point
+	Public kyber.Point
 }
 
 // StoreConfig presents a config to store
@@ -69,7 +69,7 @@ type StoreConfigReply struct {
 // TODO: support more than one popconfig
 type FinalizeRequest struct {
 	DescID    []byte
-	Attendees []abstract.Point
+	Attendees []kyber.Point
 }
 
 // FinalizeResponse returns the FinalStatement if all conodes already received

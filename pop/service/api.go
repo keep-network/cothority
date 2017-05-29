@@ -4,14 +4,14 @@ import (
 	"bytes"
 
 	"github.com/BurntSushi/toml"
+	"github.com/dedis/onet"
 	"github.com/satori/go.uuid"
-	"gopkg.in/dedis/crypto.v0/abstract"
-	"gopkg.in/dedis/crypto.v0/base64"
-	"gopkg.in/dedis/crypto.v0/eddsa"
-	"gopkg.in/dedis/onet.v1"
-	"gopkg.in/dedis/onet.v1/crypto"
-	"gopkg.in/dedis/onet.v1/log"
-	"gopkg.in/dedis/onet.v1/network"
+	"gopkg.in/dedis/kyber.v1"
+	"gopkg.in/dedis/kyber.v1/base64"
+	"gopkg.in/dedis/kyber.v1/eddsa"
+	"gopkg.in/dedis/kyber.v1/util/encoding"
+	"gopkg.in/dedis/onet.v2/log"
+	"gopkg.in/dedis/onet.v2/network"
 )
 
 const (
@@ -45,7 +45,7 @@ func NewClient() *Client {
 // If no PIN is given, the cothority will print out a "PIN: ...."-line on the stdout.
 // If the PIN is given and is correct, the public key will be stored in the
 // service.
-func (c *Client) PinRequest(dst network.Address, pin string, pub abstract.Point) onet.ClientError {
+func (c *Client) PinRequest(dst network.Address, pin string, pub kyber.Point) onet.ClientError {
 	si := &network.ServerIdentity{Address: dst}
 	return c.SendProtobuf(si, &PinRequest{pin, pub}, nil)
 }
@@ -66,7 +66,7 @@ func (c *Client) StoreConfig(dst network.Address, p *PopDesc) onet.ClientError {
 // not in all the conodes will be stripped, and that new pop-description
 // collectively signed. The new pop-description and the final statement
 // will be returned.
-func (c *Client) Finalize(dst network.Address, p *PopDesc, attendees []abstract.Point) (
+func (c *Client) Finalize(dst network.Address, p *PopDesc, attendees []kyber.Point) (
 	*FinalStatement, onet.ClientError) {
 	si := &network.ServerIdentity{Address: dst}
 	res := &FinalizeResponse{}
@@ -83,7 +83,7 @@ type FinalStatement struct {
 	// Desc is the description of the pop-party.
 	Desc *PopDesc
 	// Attendees holds a slice of all public keys of the attendees.
-	Attendees []abstract.Point
+	Attendees []kyber.Point
 	// Signature is created by all conodes responsible for that pop-party
 	Signature []byte
 }
@@ -108,7 +108,7 @@ func NewFinalStatementFromToml(b []byte) (*FinalStatement, error) {
 		if err != nil {
 			return nil, err
 		}
-		pub, err := crypto.String64ToPub(network.Suite, s[3])
+		pub, err := encoding.String64ToPub(network.S, s[3])
 		if err != nil {
 			return nil, err
 		}
@@ -126,9 +126,9 @@ func NewFinalStatementFromToml(b []byte) (*FinalStatement, error) {
 		Location: fsToml.Desc.Location,
 		Roster:   rostr,
 	}
-	atts := []abstract.Point{}
+	atts := []kyber.Point{}
 	for _, p := range fsToml.Attendees {
-		pub, err := crypto.String64ToPub(network.Suite, p)
+		pub, err := encoding.String64ToPub(network.S, p)
 		if err != nil {
 			return nil, err
 		}
@@ -151,7 +151,7 @@ func NewFinalStatementFromToml(b []byte) (*FinalStatement, error) {
 func (fs *FinalStatement) ToToml() ([]byte, error) {
 	rostr := [][]string{}
 	for _, si := range fs.Desc.Roster.List {
-		str, err := crypto.PubToString64(nil, si.Public)
+		str, err := encoding.PubToString64(nil, si.Public)
 		if err != nil {
 			return nil, err
 		}
@@ -167,7 +167,7 @@ func (fs *FinalStatement) ToToml() ([]byte, error) {
 	}
 	atts := []string{}
 	for _, p := range fs.Attendees {
-		str, err := crypto.PubToString64(nil, p)
+		str, err := encoding.PubToString64(nil, p)
 		if err != nil {
 			return nil, err
 		}

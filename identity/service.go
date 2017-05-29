@@ -21,11 +21,11 @@ import (
 
 	"github.com/dedis/cothority/messaging"
 	"github.com/dedis/cothority/skipchain"
+	"github.com/dedis/onet"
 	"github.com/satori/go.uuid"
-	"gopkg.in/dedis/onet.v1"
-	"gopkg.in/dedis/onet.v1/crypto"
-	"gopkg.in/dedis/onet.v1/log"
-	"gopkg.in/dedis/onet.v1/network"
+	"gopkg.in/dedis/crypto.v1/sign/schnorr"
+	"gopkg.in/dedis/onet.v2/log"
+	"gopkg.in/dedis/onet.v2/network"
 )
 
 // ServiceName can be used to refer to the name of this service
@@ -207,13 +207,13 @@ func (s *Service) ProposeVote(v *ProposeVote) (network.Message, onet.ClientError
 		if oldvote := sid.Proposed.Votes[v.Signer]; oldvote != nil {
 			// It can either be an update-vote (accepted), or a second
 			// vote (refused).
-			if crypto.VerifySchnorr(network.Suite, owner.Point, hash, *oldvote) == nil {
+			if schnorr.Verify(network.Suite, owner.Point, hash, *oldvote) == nil {
 				return onet.NewClientErrorCode(ErrorVoteDouble, "Already voted for that block")
 			}
 		}
 		log.Lvl3(v.Signer, "voted", v.Signature)
 		if v.Signature != nil {
-			err = crypto.VerifySchnorr(network.Suite, owner.Point, hash, *v.Signature)
+			err = schnorr.Verify(network.Suite, owner.Point, hash, *v.Signature)
 			if err != nil {
 				return onet.NewClientErrorCode(ErrorVoteSignature, "Wrong signature: "+err.Error())
 			}
@@ -301,7 +301,7 @@ func (s *Service) VerifyBlock(sbID []byte, sb *skipchain.SkipBlock) bool {
 		sigCnt := 0
 		for dev, sig := range data.Votes {
 			if pub := dataLatest.Device[dev]; pub != nil {
-				if err := crypto.VerifySchnorr(network.Suite, pub.Point, hash, *sig); err != nil {
+				if err := schnorr.Verify(network.Suite, pub.Point, hash, *sig); err != nil {
 					return err
 				}
 				sigCnt++
@@ -352,7 +352,7 @@ func (s *Service) propagateDataHandler(msg network.Message) {
 			p := msg.(*ProposeSend)
 			sid.Proposed = p.Propose
 			if len(sid.Proposed.Votes) == 0 {
-				sid.Proposed.Votes = map[string]*crypto.SchnorrSig{}
+				sid.Proposed.Votes = make(map[string][]byte)
 			}
 		case *ProposeVote:
 			v := msg.(*ProposeVote)
@@ -366,7 +366,7 @@ func (s *Service) propagateDataHandler(msg network.Message) {
 				log.Error("Couldn't hash proposed block:", err)
 				return
 			}
-			err = crypto.VerifySchnorr(network.Suite, d.Point, hash, *v.Signature)
+			err = schnorr.Verify(network.Suite, d.Point, hash, *v.Signature)
 			if err != nil {
 				log.Error("Got invalid signature:", err)
 				return
