@@ -48,26 +48,26 @@ type BFTSignature struct {
 // signature, so it can be verified by dedis/crypto/cosi.
 // publics is a slice of all public signatures, and the msg is the msg
 // being signed.
-func (bs *BFTSignature) Verify(s abstract.Suite, publics []kyber.Point) error {
+func (bs *BFTSignature) Verify(g kyber.Group, publics []kyber.Point) error {
 	if bs == nil || bs.Sig == nil || bs.Msg == nil {
 		return errors.New("Invalid signature")
 	}
 	// compute the aggregate key of all the signers
-	aggPublic := s.Point().Null()
+	aggPublic := g.Point().Null()
 	for i := range publics {
 		aggPublic.Add(aggPublic, publics[i])
 	}
 	// compute the reduced public aggregate key (all - exception)
-	aggReducedPublic := s.Point().Null().Add(s.Point().Null(), aggPublic)
+	aggReducedPublic := g.Point().Null().Add(g.Point().Null(), aggPublic)
 
 	// compute the aggregate commit of exception
-	aggExCommit := s.Point().Null()
+	aggExCommit := g.Point().Null()
 	for _, ex := range bs.Exceptions {
 		aggExCommit = aggExCommit.Add(aggExCommit, ex.Commitment)
 		aggReducedPublic.Sub(aggReducedPublic, publics[ex.Index])
 	}
 	// get back the commit to recreate  the challenge
-	origCommit := s.Point()
+	origCommit := g.Point()
 	if err := origCommit.UnmarshalBinary(bs.Sig[0:32]); err != nil {
 		return err
 	}
@@ -86,14 +86,14 @@ func (bs *BFTSignature) Verify(s abstract.Suite, publics []kyber.Point) error {
 
 	// redo like in cosi -k*A + r*B == C
 	// only with C being the reduced version
-	k := s.Scalar().SetBytes(h.Sum(nil))
-	minusPublic := s.Point().Neg(aggReducedPublic)
-	ka := s.Point().Mul(minusPublic, k)
-	r := s.Scalar().SetBytes(bs.Sig[32:64])
-	rb := s.Point().Mul(nil, r)
-	left := s.Point().Add(rb, ka)
+	k := g.Scalar().SetBytes(h.Sum(nil))
+	minusPublic := g.Point().Neg(aggReducedPublic)
+	ka := g.Point().Mul(minusPublic, k)
+	r := g.Scalar().SetBytes(bs.Sig[32:64])
+	rb := g.Point().Mul(nil, r)
+	left := g.Point().Add(rb, ka)
 
-	right := s.Point().Sub(origCommit, aggExCommit)
+	right := g.Point().Sub(origCommit, aggExCommit)
 
 	if !left.Equal(right) {
 		return errors.New("Commit recreated is not equal to one given")
