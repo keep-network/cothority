@@ -4,7 +4,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/dedis/onet"
+	"gopkg.in/dedis/onet.v2"
 
 	"gopkg.in/dedis/kyber.v1"
 	"gopkg.in/dedis/onet.v2/network"

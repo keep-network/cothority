@@ -4,8 +4,9 @@ package cosi
 import (
 	"sync"
 
+	"gopkg.in/dedis/crypto.v0/abstract"
 	"gopkg.in/dedis/kyber.v1"
-	"gopkg.in/dedis/kyber.v1/cosi"
+	"gopkg.in/dedis/kyber.v1/sign/cosi"
 	"gopkg.in/dedis/onet.v2"
 	"gopkg.in/dedis/onet.v2/log"
 )

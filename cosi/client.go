@@ -13,7 +13,7 @@ import (
 	"github.com/dedis/cothority/cosi/check"
 	s "github.com/dedis/cothority/cosi/service"
 	"github.com/dedis/kyber"
-	"github.com/dedis/onet"
+	"gopkg.in/dedis/onet.v2"
 	"gopkg.in/dedis/crypto.v1/util/hash"
 	"gopkg.in/dedis/kyber.v1/cosi"
 	"gopkg.in/dedis/onet.v2/app"

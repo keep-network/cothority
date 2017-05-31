@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/dedis/kyber/sign/schnorr"
-	"github.com/dedis/onet"
+	"gopkg.in/dedis/onet.v2"
 
 	"gopkg.in/dedis/onet.v2/log"
 	"gopkg.in/dedis/onet.v2/network"

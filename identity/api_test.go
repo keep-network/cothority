@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/dedis/onet"
+	"gopkg.in/dedis/onet.v2"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"gopkg.in/dedis/kyber.v1/config"

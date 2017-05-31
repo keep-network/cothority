@@ -20,7 +20,7 @@ import (
 	"math"
 
 	"github.com/dedis/cothority/cosi/service"
-	"github.com/dedis/onet"
+	"gopkg.in/dedis/onet.v2"
 	"gopkg.in/dedis/kyber.v1/cosi"
 )
 

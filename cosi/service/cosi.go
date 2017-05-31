@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/dedis/cothority/cosi/protocol"
-	"github.com/dedis/onet"
+	"gopkg.in/dedis/onet.v2"
 	"github.com/satori/go.uuid"
 	"gopkg.in/dedis/crypto.v1/util/hash"
 	"gopkg.in/dedis/onet.v2/log"

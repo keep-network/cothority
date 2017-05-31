@@ -4,7 +4,7 @@ import (
 	"io"
 
 	"github.com/dedis/kyber"
-	"github.com/dedis/onet"
+	"gopkg.in/dedis/onet.v2"
 
 	"io/ioutil"
 

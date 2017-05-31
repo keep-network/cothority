@@ -4,7 +4,7 @@ import (
 	"bytes"
 
 	"github.com/BurntSushi/toml"
-	"github.com/dedis/onet"
+	"gopkg.in/dedis/onet.v2"
 	"github.com/satori/go.uuid"
 	"gopkg.in/dedis/kyber.v1"
 	"gopkg.in/dedis/kyber.v1/base64"

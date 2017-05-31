@@ -21,7 +21,7 @@ import (
 
 	"github.com/dedis/cothority/messaging"
 	"github.com/dedis/cothority/skipchain"
-	"github.com/dedis/onet"
+	"gopkg.in/dedis/onet.v2"
 	"github.com/satori/go.uuid"
 	"gopkg.in/dedis/crypto.v1/sign/schnorr"
 	"gopkg.in/dedis/onet.v2/log"

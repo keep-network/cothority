@@ -36,8 +36,10 @@ import (
 	"errors"
 	"time"
 
+	"gopkg.in/dedis/crypto.v0/abstract"
+	"gopkg.in/dedis/kyber.v1/util/key"
+
 	"gopkg.in/dedis/kyber.v1"
-	"gopkg.in/dedis/kyber.v1/config"
 	"gopkg.in/dedis/onet.v2/network"
 )
 
@@ -52,10 +54,15 @@ func init() {
 	}
 }
 
+type Suite interface {
+	kyber.Group
+	Cipher(key []byte, options ...interface{}) Cipher
+}
+
 // Cosi is the struct that implements the basic cosi.
 type Cosi struct {
 	// Suite used
-	suite abstract.Suite
+	suite Suite
 	// the longterm private key we use during the rounds
 	private kyber.Scalar
 	// timestamp of when the announcement is done (i.e. timestamp of the four
@@ -274,7 +281,7 @@ func (c *Cosi) VerifyResponses(aggregatedPublic kyber.Point) error {
 // genCommit generates a random secret vi and computes it's individual commit
 // Vi = G^vi
 func (c *Cosi) genCommit() {
-	kp := config.NewKeyPair(c.suite)
+	kp := key.NewKeyPair(c.suite)
 	c.random = kp.Secret
 	c.commitment = kp.Public
 }

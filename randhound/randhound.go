@@ -13,7 +13,7 @@ import (
 	"time"
 
 	"github.com/dedis/kyber/sign/schnorr"
-	"github.com/dedis/onet"
+	"gopkg.in/dedis/onet.v2"
 
 	"gopkg.in/dedis/crypto.v0/abstract"
 	"gopkg.in/dedis/kyber.v1"

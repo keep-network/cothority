@@ -136,13 +136,23 @@ type ByzCoin struct {
 	finalSignature *BlockSignature
 }
 
+type CoSiSuite  struct {
+	kyber.Group
+}
+func NewCoSiSuite() {
+	return &CoSiSuite{
+		Group: network.S,
+		CipherFactory: sha3.NewCipherFactory()
+	}
+}
+
 // NewByzCoinProtocol returns a new byzcoin struct
 func NewByzCoinProtocol(n *onet.TreeNodeInstance) (*ByzCoin, error) {
 	// create the byzcoin
 	bz := new(ByzCoin)
 	bz.TreeNodeInstance = n
 	bz.suite = n.Suite()
-	bz.prepare = cosi.NewCosi(n.Suite(), n.Private())
+	bz.prepare = cosi.NewCosi(n.Suite(),sha3.NewCipherFactory(),, n.Private())
 	bz.commit = cosi.NewCosi(n.Suite(), n.Private())
 	bz.verifyBlockChan = make(chan bool)
 	bz.doneProcessing = make(chan bool, 2)
