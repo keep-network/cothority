@@ -4,7 +4,6 @@ package cosi
 import (
 	"sync"
 
-	"gopkg.in/dedis/crypto.v0/abstract"
 	"gopkg.in/dedis/kyber.v1"
 	"gopkg.in/dedis/kyber.v1/sign/cosi"
 	"gopkg.in/dedis/onet.v2"
@@ -13,6 +12,8 @@ import (
 
 // Name can be used to reference the registered protocol.
 var Name = "CoSi"
+
+type Suite kyber.Group
 
 func init() {
 	onet.GlobalProtocolRegister(Name, NewProtocol)
@@ -179,7 +180,7 @@ func (c *CoSi) Start() error {
 // correct signature for this message using the aggregated public key.
 // This is copied from cosi, so that you don't need to include both lib/cosi
 // and protocols/cosi
-func VerifySignature(suite abstract.Suite, publics []kyber.Point, msg, sig []byte) error {
+func VerifySignature(suite Suite, publics []kyber.Point, msg, sig []byte) error {
 	return cosi.VerifySignature(suite, publics, msg, sig)
 }
 

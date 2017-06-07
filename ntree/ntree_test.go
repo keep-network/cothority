@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dedis/cothority/ntree"
+	"gopkg.in/dedis/cothority.v2/ntree"
 	"gopkg.in/dedis/onet.v2"
 	"gopkg.in/dedis/onet.v2/log"
 )

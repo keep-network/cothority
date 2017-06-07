@@ -15,7 +15,7 @@ import (
 
 	"path/filepath"
 
-	"github.com/dedis/cothority/identity"
+	"gopkg.in/dedis/cothority.v2/identity"
 	"gopkg.in/dedis/onet.v2"
 	"gopkg.in/dedis/onet.v2/app"
 	"gopkg.in/dedis/onet.v2/log"

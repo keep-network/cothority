@@ -1,7 +1,7 @@
 package main
 
 import (
-	p "github.com/dedis/cothority/cosi/protocol"
+	p "gopkg.in/dedis/cothority.v2/cosi/protocol"
 	"gopkg.in/dedis/kyber.v1"
 	"gopkg.in/dedis/onet.v2"
 	"gopkg.in/dedis/onet.v2/log"
@@ -20,7 +20,7 @@ func init() {
 }
 
 // VRType defines what verifications are done
-// see https://github.com/dedis/cothority/issues/260
+// see https://gopkg.in/dedis/cothority.v2/issues/260
 type VRType int
 
 const (

@@ -6,9 +6,9 @@ import (
 	"os"
 	"path"
 
-	"github.com/dedis/cothority/cosi/check"
-	_ "github.com/dedis/cothority/cosi/protocol"
-	_ "github.com/dedis/cothority/cosi/service"
+	"gopkg.in/dedis/cothority.v2/cosi/check"
+	_ "gopkg.in/dedis/cothority.v2/cosi/protocol"
+	_ "gopkg.in/dedis/cothority.v2/cosi/service"
 
 	"fmt"
 	"io/ioutil"
@@ -20,7 +20,7 @@ import (
 	"bytes"
 
 	"github.com/BurntSushi/toml"
-	"github.com/dedis/cothority/pop/service"
+	"gopkg.in/dedis/cothority.v2/pop/service"
 	"gopkg.in/dedis/kyber.v1"
 	"gopkg.in/dedis/kyber.v1/anon"
 	"gopkg.in/dedis/kyber.v1/config"

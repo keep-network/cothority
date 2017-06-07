@@ -3,7 +3,7 @@ package status
 import (
 	"testing"
 
-	"github.com/dedis/cothority/example/channels"
+	"gopkg.in/dedis/cothority.v2/example/channels"
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/dedis/onet.v2"
 	"gopkg.in/dedis/onet.v2/log"

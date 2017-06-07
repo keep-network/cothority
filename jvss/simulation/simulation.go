@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/BurntSushi/toml"
-	"github.com/dedis/cothority/jvss"
+	"gopkg.in/dedis/cothority.v2/jvss"
 	"gopkg.in/dedis/onet.v2"
 	"gopkg.in/dedis/onet.v2/log"
 	"gopkg.in/dedis/onet.v2/simul/monitor"

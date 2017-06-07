@@ -3,7 +3,7 @@ package randhound_test
 import (
 	"testing"
 
-	"github.com/dedis/cothority/randhound"
+	"gopkg.in/dedis/cothority.v2/randhound"
 	"gopkg.in/dedis/kyber.v1"
 	"gopkg.in/dedis/kyber.v1/edwards"
 	"gopkg.in/dedis/kyber.v1/random"

@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/dedis/cothority/byzcoin/blockchain"
+	"gopkg.in/dedis/cothority.v2/byzcoin/blockchain"
 	"gopkg.in/dedis/onet.v2/log"
 )
 

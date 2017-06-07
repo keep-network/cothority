@@ -19,8 +19,8 @@ import (
 
 	"fmt"
 
-	"github.com/dedis/cothority/messaging"
-	"github.com/dedis/cothority/skipchain"
+	"gopkg.in/dedis/cothority.v2/messaging"
+	"gopkg.in/dedis/cothority.v2/skipchain"
 	"gopkg.in/dedis/onet.v2"
 	"github.com/satori/go.uuid"
 	"gopkg.in/dedis/crypto.v1/sign/schnorr"

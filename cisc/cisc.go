@@ -21,7 +21,7 @@ import (
 
 	"fmt"
 
-	"github.com/dedis/cothority/identity"
+	"gopkg.in/dedis/cothority.v2/identity"
 	"github.com/qantik/qrgo"
 	"gopkg.in/dedis/onet.v2/app"
 	"gopkg.in/dedis/onet.v2/log"

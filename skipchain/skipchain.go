@@ -9,8 +9,8 @@ import (
 
 	"fmt"
 
-	"github.com/dedis/cothority/bftcosi"
-	"github.com/dedis/cothority/messaging"
+	"gopkg.in/dedis/cothority.v2/bftcosi"
+	"gopkg.in/dedis/cothority.v2/messaging"
 	"github.com/satori/go.uuid"
 	"gopkg.in/dedis/kyber.v1/random"
 	"gopkg.in/dedis/onet.v2"

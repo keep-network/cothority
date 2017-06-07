@@ -15,15 +15,17 @@ package main
 import (
 	"os"
 
+	"github.com/dedis/kyber/group/edwards25519"
+
 	"gopkg.in/dedis/onet.v2/log"
 	"gopkg.in/urfave/cli.v1"
 
-	"github.com/dedis/cothority/cosi/check"
-	_ "github.com/dedis/cothority/cosi/service"
-	_ "github.com/dedis/cothority/guard/service"
-	_ "github.com/dedis/cothority/identity"
-	_ "github.com/dedis/cothority/skipchain"
-	_ "github.com/dedis/cothority/status/service"
+	"gopkg.in/dedis/cothority.v2/cosi/check"
+	//_ "gopkg.in/dedis/cothority.v2/cosi/service"
+	//_ "gopkg.in/dedis/cothority.v2/guard/service"
+	//_ "gopkg.in/dedis/cothority.v2/identity"
+	//_ "gopkg.in/dedis/cothority.v2/skipchain"
+	/*_ "gopkg.in/dedis/cothority.v2/status/service"*/
 	"gopkg.in/dedis/onet.v2/app"
 )
 
@@ -35,6 +37,8 @@ const (
 	// Version of this binary
 	Version = "1.1"
 )
+
+var suite = edwards25519.NewAES128SHA256Ed25519(false)
 
 func main() {
 
@@ -67,7 +71,7 @@ func main() {
 				if c.String("debug") != "" {
 					log.Fatal("[-] Debug option cannot be used for the 'setup' command")
 				}
-				app.InteractiveConfig("conode")
+				app.InteractiveConfig("conode", suite)
 				return nil
 			},
 		},
@@ -116,7 +120,7 @@ func runServer(ctx *cli.Context) {
 	// first check the options
 	config := ctx.String("config")
 
-	app.RunServer(config)
+	app.RunServer(config, suite)
 }
 
 // checkConfig contacts all servers and verifies if it receives a valid
@@ -126,5 +130,5 @@ func checkConfig(c *cli.Context) error {
 	if c.NArg() > 0 {
 		tomlFileName = c.Args().First()
 	}
-	return check.Config(tomlFileName, c.Bool("detail"))
+	return check.Config(tomlFileName, c.Bool("detail"), suite)
 }

@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dedis/cothority/example/channels"
+	"gopkg.in/dedis/cothority.v2/example/channels"
 	"gopkg.in/dedis/onet.v2"
 	"gopkg.in/dedis/onet.v2/log"
 	"gopkg.in/dedis/onet.v2/network"

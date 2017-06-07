@@ -1,13 +1,16 @@
 package service
 
 import (
+	"errors"
 	"fmt"
+	"hash"
 	"time"
 
-	"github.com/dedis/cothority/cosi/protocol"
-	"gopkg.in/dedis/onet.v2"
 	"github.com/satori/go.uuid"
-	"gopkg.in/dedis/crypto.v1/util/hash"
+	"gopkg.in/dedis/cothority.v2/cosi/protocol"
+	"gopkg.in/dedis/kyber.v1"
+	khash "gopkg.in/dedis/kyber.v1/util/hash"
+	"gopkg.in/dedis/onet.v2"
 	"gopkg.in/dedis/onet.v2/log"
 	"gopkg.in/dedis/onet.v2/network"
 )
@@ -26,9 +29,15 @@ func init() {
 	network.RegisterMessage(&SignatureResponse{})
 }
 
+type Suite interface {
+	kyber.Group
+	Hash() hash.Hash
+}
+
 // CoSi is the service that handles collective signing operations
 type CoSi struct {
 	*onet.ServiceProcessor
+	suite Suite
 }
 
 // SignatureRequest is what the Cosi service is expected to receive from clients.
@@ -59,7 +68,7 @@ func (cs *CoSi) SignatureRequest(req *SignatureRequest) (network.Message, onet.C
 	cs.RegisterProtocolInstance(pi)
 	pcosi := pi.(*cosi.CoSi)
 	pcosi.SigningMessage(req.Message)
-	h, err := hash.Bytes(network.Suite.Hash(), req.Message)
+	h, err := khash.Bytes(cs.suite.Hash(), req.Message)
 	if err != nil {
 		return nil, onet.NewClientErrorCode(4101, "Couldn't hash message: "+err.Error())
 	}
@@ -89,13 +98,18 @@ func (cs *CoSi) NewProtocol(tn *onet.TreeNodeInstance, conf *onet.GenericConfig)
 	return pi, err
 }
 
-func newCoSiService(c *onet.Context) onet.Service {
-	s := &CoSi{
-		ServiceProcessor: onet.NewServiceProcessor(c),
+func newCoSiService(c *onet.Context, s interface{}) (onet.Service, error) {
+	suite, ok := s.(Suite)
+	if !ok {
+		return nil, errors.New("cosi: invalid suite given")
 	}
-	err := s.RegisterHandler(s.SignatureRequest)
+	service := &CoSi{
+		ServiceProcessor: onet.NewServiceProcessor(c, suite),
+		suite:            suite,
+	}
+	err := service.RegisterHandler(service.SignatureRequest)
 	if err != nil {
-		log.ErrFatal(err, "Couldn't register message:")
+		return nil, err
 	}
-	return s
+	return service, nil
 }

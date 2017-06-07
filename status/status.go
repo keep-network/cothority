@@ -7,7 +7,7 @@ import (
 
 	"errors"
 
-	"github.com/dedis/cothority/status/service"
+	"gopkg.in/dedis/cothority.v2/status/service"
 	"gopkg.in/dedis/onet.v2"
 	"gopkg.in/dedis/onet.v2/app"
 	"gopkg.in/dedis/onet.v2/log"

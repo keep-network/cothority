@@ -32,8 +32,8 @@ import (
 
 	"math/big"
 
-	"github.com/dedis/cothority/cosi/protocol"
-	"github.com/dedis/cothority/messaging"
+	"gopkg.in/dedis/cothority.v2/cosi/protocol"
+	"gopkg.in/dedis/cothority.v2/messaging"
 	"gopkg.in/dedis/kyber.v1"
 	"gopkg.in/dedis/kyber.v1/random"
 	"gopkg.in/dedis/onet.v2"

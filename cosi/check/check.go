@@ -19,9 +19,9 @@ import (
 
 	"math"
 
-	"github.com/dedis/cothority/cosi/service"
+	"gopkg.in/dedis/cothority.v2/cosi/service"
+	cosiProtocol "gopkg.in/dedis/kyber.v1/sign/cosi"
 	"gopkg.in/dedis/onet.v2"
-	"gopkg.in/dedis/kyber.v1/cosi"
 )
 
 // RequestTimeOut is how long we're willing to wait for a signature.
@@ -31,17 +31,17 @@ var RequestTimeOut = time.Second * 10
 // signature from each.
 // If the roster is empty it will return an error.
 // If a server doesn't reply in time, it will return an error.
-func Config(tomlFileName string, detail bool) error {
+func Config(tomlFileName string, detail bool, suite service.Suite) error {
 	f, err := os.Open(tomlFileName)
 	log.ErrFatal(err, "Couldn't open group definition file")
-	group, err := app.ReadGroupDescToml(f)
+	group, err := app.ReadGroupDescToml(f, suite)
 	log.ErrFatal(err, "Error while reading group definition file", err)
 	if len(group.Roster.List) == 0 {
 		log.ErrFatalf(err, "Empty entity or invalid group defintion in: %s",
 			tomlFileName)
 	}
 	log.Info("Checking the availability and responsiveness of the servers in the group...")
-	return Servers(group, detail)
+	return Servers(group, detail, suite)
 }
 
 // Servers contacts all servers in the entity-list and then makes checks
@@ -49,7 +49,7 @@ func Config(tomlFileName string, detail bool) error {
 // along with the IP-address of the server.
 // In case a server doesn't reply in time or there is an error in the
 // signature, an error is returned.
-func Servers(g *app.Group, detail bool) error {
+func Servers(g *app.Group, detail bool, suite service.Suite) error {
 	totalSuccess := true
 	// First check all servers individually and write the working servers
 	// in a list
@@ -60,7 +60,7 @@ func Servers(g *app.Group, detail bool) error {
 			desc = []string{d, d}
 		}
 		el := onet.NewRoster([]*network.ServerIdentity{e})
-		err := checkList(el, desc, true)
+		err := checkList(el, desc, true, suite)
 		if err == nil {
 			working = append(working, e)
 		} else {
@@ -77,7 +77,7 @@ func Servers(g *app.Group, detail bool) error {
 			for i, si := range working {
 				descriptions[permutation[i]] = g.GetDescription(si)
 			}
-			totalSuccess = checkList(onet.NewRoster(working), descriptions, detail) == nil && totalSuccess
+			totalSuccess = checkList(onet.NewRoster(working), descriptions, detail, suite) == nil && totalSuccess
 		}
 
 		// Then check pairs of servers if we want to have detail
@@ -90,10 +90,10 @@ func Servers(g *app.Group, detail bool) error {
 						desc = []string{d1, g.GetDescription(second)}
 					}
 					es := []*network.ServerIdentity{first, second}
-					totalSuccess = checkList(onet.NewRoster(es), desc, detail) == nil && totalSuccess
+					totalSuccess = checkList(onet.NewRoster(es), desc, detail, suite) == nil && totalSuccess
 					es[0], es[1] = es[1], es[0]
 					desc[0], desc[1] = desc[1], desc[0]
-					totalSuccess = checkList(onet.NewRoster(es), desc, detail) == nil && totalSuccess
+					totalSuccess = checkList(onet.NewRoster(es), desc, detail, suite) == nil && totalSuccess
 				}
 			}
 		}
@@ -108,7 +108,7 @@ func Servers(g *app.Group, detail bool) error {
 // waits for the reply.
 // If the reply doesn't arrive in time, it will return an
 // error.
-func checkList(list *onet.Roster, descs []string, detail bool) error {
+func checkList(list *onet.Roster, descs []string, detail bool, suite service.Suite) error {
 	serverStr := ""
 	for i, s := range list.List {
 		name := strings.Split(descs[i], " ")[0]
@@ -120,12 +120,12 @@ func checkList(list *onet.Roster, descs []string, detail bool) error {
 	log.Lvl3("Sending message to: " + serverStr)
 	msg := "verification"
 	fmt.Printf("Checking %d server(s) %s: ", len(list.List), serverStr)
-	sig, err := signStatement(strings.NewReader(msg), list)
+	sig, err := signStatement(strings.NewReader(msg), list, suite)
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-	err = verifySignatureHash([]byte(msg), sig, list)
+	err = verifySignatureHash([]byte(msg), sig, list, suite)
 	if err != nil {
 		fmt.Printf("Invalid signature: %s\n", err.Error())
 		return err
@@ -138,11 +138,11 @@ func checkList(list *onet.Roster, descs []string, detail bool) error {
 // (pass an io.File or use an strings.NewReader for strings). It uses
 // the roster el to create the collective signature.
 // In case the signature fails, an error is returned.
-func signStatement(read io.Reader, el *onet.Roster) (*service.SignatureResponse,
+func signStatement(read io.Reader, el *onet.Roster, suite service.Suite) (*service.SignatureResponse,
 	error) {
 	//publics := entityListToPublics(el)
-	client := service.NewClient()
-	msg, _ := hash.Stream(network.Suite.Hash(), read)
+	client := service.NewClient(suite)
+	msg, _ := hash.Stream(suite.Hash(), read)
 
 	pchan := make(chan *service.SignatureResponse)
 	var err error
@@ -163,7 +163,7 @@ func signStatement(read io.Reader, el *onet.Roster) (*service.SignatureResponse,
 		if !ok || err != nil {
 			return nil, errors.New("received an invalid response")
 		}
-		err = cosi.VerifySignature(network.Suite, el.Publics(), msg, response.Signature)
+		err = cosiProtocol.VerifySignature(suite, el.Publics(), msg, response.Signature)
 		if err != nil {
 			return nil, err
 		}
@@ -176,18 +176,18 @@ func signStatement(read io.Reader, el *onet.Roster) (*service.SignatureResponse,
 // verifySignatureHash verifies if the message b is correctly signed by signature
 // sig from roster el.
 // If the signature-check fails for any reason, an error is returned.
-func verifySignatureHash(b []byte, sig *service.SignatureResponse, el *onet.Roster) error {
+func verifySignatureHash(b []byte, sig *service.SignatureResponse, el *onet.Roster, suite service.Suite) error {
 	// We have to hash twice, as the hash in the signature is the hash of the
 	// message sent to be signed
 	//publics := entityListToPublics(el)
-	fHash, _ := hash.Bytes(network.Suite.Hash(), b)
-	hashHash, _ := hash.Bytes(network.Suite.Hash(), fHash)
+	fHash, _ := hash.Bytes(suite.Hash(), b)
+	hashHash, _ := hash.Bytes(suite.Hash(), fHash)
 	if !bytes.Equal(hashHash, sig.Hash) {
 		return errors.New("You are trying to verify a signature " +
 			"belonging to another file. (The hash provided by the signature " +
 			"doesn't match with the hash of the file.)")
 	}
-	err := cosi.VerifySignature(network.Suite, el.Publics(), fHash, sig.Signature)
+	err := cosiProtocol.VerifySignature(suite, el.Publics(), fHash, sig.Signature)
 	if err != nil {
 		return errors.New("Invalid sig:" + err.Error())
 	}

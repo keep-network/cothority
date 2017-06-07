@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 
-	"github.com/dedis/cothority/byzcoin/blockchain/blkparser"
+	"gopkg.in/dedis/cothority.v2/byzcoin/blockchain/blkparser"
 	"gopkg.in/dedis/kyber.v1"
 	"gopkg.in/dedis/kyber.v1/suites"
 	"gopkg.in/dedis/onet.v2/log"

@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dedis/cothority/randhound"
+	"gopkg.in/dedis/cothority.v2/randhound"
 	"gopkg.in/dedis/onet.v2"
 	"gopkg.in/dedis/onet.v2/log"
 )

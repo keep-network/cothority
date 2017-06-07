@@ -7,7 +7,7 @@ import (
 
 	"bytes"
 
-	"github.com/dedis/cothority/bftcosi"
+	"gopkg.in/dedis/cothority.v2/bftcosi"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"gopkg.in/dedis/kyber.v1/random"
