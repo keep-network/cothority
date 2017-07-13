@@ -3,7 +3,7 @@ package service
 import (
 	"errors"
 
-	"github.com/dedis/onet/network"
+	"gopkg.in/dedis/onet.v2/network"
 
 	"gopkg.in/dedis/onet.v2"
 	"gopkg.in/dedis/onet.v2/log"

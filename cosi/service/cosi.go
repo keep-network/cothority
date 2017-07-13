@@ -3,7 +3,6 @@ package service
 import (
 	"errors"
 	"fmt"
-	"hash"
 	"time"
 
 	"github.com/satori/go.uuid"
@@ -31,7 +30,7 @@ func init() {
 
 type Suite interface {
 	kyber.Group
-	Hash() hash.Hash
+	kyber.HashFactory
 }
 
 // CoSi is the service that handles collective signing operations
