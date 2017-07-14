@@ -1,6 +1,8 @@
 package dkg
 
 import (
+	"sync"
+
 	"github.com/dedis/onet/log"
 	"gopkg.in/dedis/kyber.v1"
 	"gopkg.in/dedis/kyber.v1/share/pedersen/dkg"
@@ -22,6 +24,9 @@ type DkgProto struct {
 	dkg       *dkg.DistKeyGenerator
 	dks       *dkg.DistKeyShare
 	dkgDoneCb func(*dkg.DistKeyShare)
+	list      []*onet.TreeNode // to avoid recomputing it
+	sentDeal  bool
+	sync.Mutex
 }
 
 type DealMsg struct {
@@ -45,8 +50,9 @@ func newProtoWrong(node *onet.TreeNodeInstance) (onet.ProtocolInstance, error) {
 
 func NewProtocol(node *onet.TreeNodeInstance, t int, cb func(*dkg.DistKeyShare)) (*DkgProto, error) {
 	var participants = make([]kyber.Point, len(node.Roster().List))
-	for i, e := range node.Roster().List {
-		participants[i] = e.Public
+	list := node.Tree().List()
+	for i, e := range list {
+		participants[i] = e.ServerIdentity.Public
 	}
 	dkg, err := dkg.NewDistKeyGenerator(node.Suite().(dkg.Suite), node.Private(), participants, random.Stream, t)
 	if err != nil {
@@ -57,13 +63,27 @@ func NewProtocol(node *onet.TreeNodeInstance, t int, cb func(*dkg.DistKeyShare))
 		TreeNodeInstance: node,
 		dkg:              dkg,
 		dkgDoneCb:        cb,
+		list:             list,
 	}
 
 	err = dp.RegisterHandlers(dp.OnDeal, dp.OnResponse, dp.OnJustification)
 	return dp, err
 }
 
+func (d *DkgProto) Start() error {
+	return d.sendDeals()
+}
+
 func (d *DkgProto) OnDeal(dm *DealMsg) error {
+	d.Lock()
+	if !d.sentDeal {
+		d.sentDeal = true
+		d.Unlock()
+		if err := d.sendDeals(); err != nil {
+			return err
+		}
+	}
+	d.Unlock()
 	resp, err := d.dkg.ProcessDeal(&dm.Deal)
 	if err != nil {
 		return err
@@ -88,6 +108,23 @@ func (d *DkgProto) OnJustification(jm *JustificationMsg) error {
 		return err
 	}
 
+	return nil
+}
+
+func (d *DkgProto) sendDeals() error {
+	deals, err := d.dkg.Deals()
+	if err != nil {
+		return err
+	}
+	for i, l := range d.list {
+		deal, ok := deals[i]
+		if !ok {
+			continue
+		}
+		if err := d.SendTo(l, deal); err != nil {
+			log.Lvl3(d.Info(), err)
+		}
+	}
 	return nil
 }
 
